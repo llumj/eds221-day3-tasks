@@ -8,8 +8,39 @@ editor_options:
 ```{r}
 library(here)
 library(janitor)
-read.csv(here::here("data", "2011_Kling_Akchem.csv"))
+library(tidyverse)
+toolkit_biochem <- read.csv(here::here("data", "2011_Kling_Akchem.csv"), na.strings = c(".", "NA"))
 
+skimr::skim(toolkit_biochem)
 
+toolkit_biochem <- toolkit_biochem %>% 
+  janitor::clean_names()
+
+names(toolkit_biochem)
+
+inlet_biochem <- toolkit_biochem %>% dplyr::select(p_h, doc_u_m, tdn_u_m)
+
+class(inlet_biochem)
+is.numeric(inlet_biochem$tdn_u_m)
+
+inlet_biochem <- inlet_biochem %>%
+  summarise(across(where(is.numeric) , mean, na.rm = TRUE))
+
+#reload previous code to keep old data to use for column mean in loop function
+inlet_biochem <- toolkit_biochem %>% dplyr::select(p_h, doc_u_m, tdn_u_m)
 ```
 
+
+```{r}
+mean_inlet_biochem <- vector(mode = "numeric", length = ncol(inlet_biochem))
+
+for (i in 1:ncol(inlet_biochem)) {
+  mean_value <- mean(inlet_biochem[,i], na.rm = TRUE) 
+  mean_inlet_biochem[[i]] <- mean_value
+}
+
+mean_inlet_biochem
+```
+
+
+```{r}
