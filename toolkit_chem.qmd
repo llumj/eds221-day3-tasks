@@ -1,0 +1,15 @@
+---
+title: "toolkit_chem"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(here)
+library(janitor)
+read.csv(here::here("data", "2011_Kling_Akchem.csv"))
+
+
+```
+
